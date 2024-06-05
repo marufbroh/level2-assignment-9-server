@@ -1,6 +1,7 @@
 
 import { AdoptionRequest } from "@prisma/client";
 import prisma from "../../shared/prisma";
+import ApiError from "../../errors/ApiError";
 
 interface PetInfo {
     petId: string;
@@ -26,6 +27,15 @@ const createAdoptionRequest = async (payload: PetInfo, email: string) => {
         }
     })
 
+const isAlradyAdoptionRequestSend = await prisma.adoptionRequest.findFirst({
+    where:{
+        petId:payload.petId
+    }
+})
+console.log({isAlradyAdoptionRequestSend});
+if(isAlradyAdoptionRequestSend){
+    throw new ApiError(404,"You Alrady request for this pet. Please adopt another pet")
+}
     payload.userId = userData.id;
     const result = await prisma.adoptionRequest.create({
         data: payload
@@ -36,7 +46,11 @@ const createAdoptionRequest = async (payload: PetInfo, email: string) => {
 
 
 const getAllAdoptionRequests = async () => {
-    const result = await prisma.adoptionRequest.findMany()
+    const result = await prisma.adoptionRequest.findMany({
+        include:{
+            pet:true
+        }
+    })
     return result
 }
 
@@ -76,6 +90,28 @@ return result
 }
 
 
+const myAdoptedPets = async (id: string) => {
+await prisma.user.findUniqueOrThrow({
+    where:{
+        id
+    }
+})
+
+const result = await prisma.adoptionRequest.findMany({
+    where:{
+        userId:id,
+        status:"APPROVED"
+    },
+    include:{
+        pet:true
+    }
+})
+
+return result
+
+}
+
+
 
 
 
@@ -84,5 +120,6 @@ export const AdoptionRequestServices = {
     createAdoptionRequest,
     getAllAdoptionRequests,
     updateAdoptionRequests,
-    myAdoptionRequest
+    myAdoptionRequest,
+    myAdoptedPets
 }

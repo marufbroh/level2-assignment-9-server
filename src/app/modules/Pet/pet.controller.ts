@@ -19,8 +19,23 @@ const createPet = catchAsync(async (req, res) => {
 
 })
 
+const updateSinglePet = catchAsync(async (req, res) => {
+   
+    const id = req.params.id;
+    const data = pick(req.body, petUpdateableFields);
+    const file = req.file
+    const result = await PetServices.updateSinglePet(id, data,file);
+    sendResponse(res, {
+        success: true,
+        message: "Pet profile updated successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+
+})
+
 const uploadMultiplePhotos = catchAsync(async (req, res) => {
-    const id = req.body.id
+    const id = req.body
     const files = req.files
     const result = await PetServices.uploadMultiplePhotos(files, id);
     sendResponse(res, {
@@ -63,19 +78,8 @@ const getSinglePet = catchAsync(async (req, res) => {
 })
 
 
-const updateSinglePet = catchAsync(async (req, res) => {
 
-    const id = req.params.id;
-    const data = pick(req.body, petUpdateableFields);
-    const result = await PetServices.updateSinglePet(id, data);
-    sendResponse(res, {
-        success: true,
-        message: "Pet profile updated successfully",
-        statusCode: httpStatus.OK,
-        data: result
-    })
 
-})
 const deleteSinglePet = catchAsync(async (req, res) => {
 
     const id = req.params.id;
@@ -91,6 +95,72 @@ const deleteSinglePet = catchAsync(async (req, res) => {
 })
 
 
+const getUniqueAges = catchAsync(async (req, res) => {
+
+    const result = await PetServices.getUniqueAges();
+    sendResponse(res, {
+        success: true,
+        message: "Pets uniqueAges  get successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+
+})
+
+const getUniqueBreeds = catchAsync(async (req, res) => {
+
+    const result = await PetServices.getUniqueBreeds();
+    sendResponse(res, {
+        success: true,
+        message: "Pets uniqueBreeds  get successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+
+})
+
+const getUniqueLocations = catchAsync(async (req, res) => {
+
+    const result = await PetServices.getUniqueLocations();
+    sendResponse(res, {
+        success: true,
+        message: "Pets uniqueLocations  get successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+
+})
+const getUniqueSpecies = catchAsync(async (req, res) => {
+
+    const result = await PetServices.getUniqueSpecies();
+    sendResponse(res, {
+        success: true,
+        message: "Pets uniqueSpecies  get successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+
+})
+
+
+
+const getUniqueMedicalHistory = catchAsync(async (req, res) => {
+
+    const result = await PetServices.getUniqueMedicalHistory();
+    sendResponse(res, {
+        success: true,
+        message: "Pets uniqueMedicalHistory  get successfully",
+        statusCode: httpStatus.OK,
+        data: result
+    })
+
+})
+
+
+
+
+
+
 
 export const PetControllers = {
     getAllPets,
@@ -98,5 +168,10 @@ export const PetControllers = {
     createPet,
     updateSinglePet,
     uploadMultiplePhotos,
-    deleteSinglePet
+    deleteSinglePet,
+    getUniqueAges,
+    getUniqueBreeds,
+    getUniqueLocations,
+    getUniqueSpecies,
+    getUniqueMedicalHistory
 }
